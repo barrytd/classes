@@ -8,97 +8,14 @@
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .icon { width: 1rem; height: 1rem; display: inline-block; }
-        .icon-lg { width: 1.5rem; height: 1.5rem; }
-        .icon-xl { width: 2rem; height: 2rem; }
-    </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
-        
-        // Simple icon components using SVG
-        const Calendar = () => (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-          </svg>
-        );
-        
-        const Clock = () => (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="10"></circle>
-            <polyline points="12,6 12,12 16,14"></polyline>
-          </svg>
-        );
-        
-        const BookOpen = ({ className }) => (
-          <svg className={className || "w-5 h-5"} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-          </svg>
-        );
-        
-        const Target = () => (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="10"></circle>
-            <circle cx="12" cy="12" r="6"></circle>
-            <circle cx="12" cy="12" r="2"></circle>
-          </svg>
-        );
-        
-        const Check = ({ className }) => (
-          <svg className={className || "w-5 h-5"} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <polyline points="20,6 9,17 4,12"></polyline>
-          </svg>
-        );
+        const { useState } = React;
 
-        const Plus = () => (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
-        );
-
-        const Trash = () => (
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <polyline points="3,6 5,6 21,6"></polyline>
-            <path d="m19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"></path>
-          </svg>
-        );
-
-        const Edit = () => (
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path d="m11,4 6,6L6,21H0V15L11,4z"></path>
-          </svg>
-        );
-
-        const Moon = () => (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-          </svg>
-        );
-
-        const Sun = () => (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-          </svg>
-        );
-
-        const StudyPlanner = () => {
+        function StudyPlanner() {
           const [darkMode, setDarkMode] = useState(false);
           const [classes, setClasses] = useState([
             { id: 1, name: "Digital Forensics in Cybersecurity – D431", credits: 3, priority: true, estimatedWeeks: 0, estimatedDays: 0, completed: false },
@@ -121,24 +38,22 @@
           const [editForm, setEditForm] = useState({ name: '', credits: 3 });
           const [newClass, setNewClass] = useState({ name: '', credits: 3, priority: false });
           const [showAddClass, setShowAddClass] = useState(false);
-                  // Add this code to enable saving on your deployed version
-            useEffect(() => {
+                        // Add localStorage saving (for deployed version only)
+            React.useEffect(() => {
               const saved = localStorage.getItem('studyPlannerData');
               if (saved) {
                 const data = JSON.parse(saved);
-                setClasses(data.classes || classes);
-                setStartDate(data.startDate || startDate);
-                setDarkMode(data.darkMode || false);
+                if (data.classes) setClasses(data.classes);
+                if (data.startDate) setStartDate(data.startDate);
+                if (data.darkMode !== undefined) setDarkMode(data.darkMode);
               }
             }, []);
-        
-        useEffect(() => {
-          localStorage.setItem('studyPlannerData', JSON.stringify({
-            classes,
-            startDate,
-            darkMode
-          }));
-        }, [classes, startDate, darkMode]); 
+            
+            React.useEffect(() => {
+              localStorage.setItem('studyPlannerData', JSON.stringify({
+                classes, startDate, darkMode
+              }));
+            }, [classes, startDate, darkMode]);
 
           const updateEstimatedWeeks = (id, weeks) => {
             setClasses(prev => prev.map(cls => 
@@ -176,18 +91,17 @@
           };
 
           const deleteClass = (id) => {
-            if (confirm('Are you sure you want to delete this class?')) {
-              setClasses(prev => prev.filter(cls => cls.id !== id));
-            }
+            setClasses(prev => prev.filter(cls => cls.id !== id));
           };
 
           const addClass = () => {
             if (newClass.name.trim()) {
-              const newId = Math.max(...classes.map(c => c.id)) + 1;
+              const existingIds = classes.map(c => c.id);
+              const newId = existingIds.length > 0 ? Math.max(...existingIds) + 1 : 1;
               setClasses(prev => [...prev, {
                 id: newId,
                 name: newClass.name.trim(),
-                credits: parseInt(newClass.credits),
+                credits: parseInt(newClass.credits) || 3,
                 priority: newClass.priority,
                 estimatedWeeks: 0,
                 estimatedDays: 0,
@@ -244,13 +158,12 @@
             }`}>
               <div className="max-w-6xl mx-auto p-6">
                 
-                {/* Header with Dark Mode Toggle */}
                 <div className={`rounded-lg shadow-lg p-6 mb-6 transition-colors ${
                   darkMode ? 'bg-gray-800' : 'bg-white'
                 }`}>
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
-                      <BookOpen className="text-blue-600 w-8 h-8" />
+                      <div className="text-blue-600 w-8 h-8">📚</div>
                       <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
                         Academic Study Planner
                       </h1>
@@ -263,36 +176,35 @@
                           : 'bg-gray-700 text-yellow-400 hover:bg-gray-600'
                       }`}
                     >
-                      {darkMode ? <Sun /> : <Moon />}
+                      {darkMode ? '☀️' : '🌙'}
                     </button>
                   </div>
 
-                  {/* Summary Stats */}
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
                     <div className={`p-4 rounded-lg ${darkMode ? 'bg-blue-900' : 'bg-blue-100'}`}>
                       <div className="flex items-center gap-2">
-                        <Target />
+                        <span>🎯</span>
                         <span className={`font-semibold ${darkMode ? 'text-blue-200' : 'text-blue-800'}`}>Total Classes</span>
                       </div>
                       <p className={`text-2xl font-bold ${darkMode ? 'text-blue-100' : 'text-blue-900'}`}>{classes.length}</p>
                     </div>
                     <div className={`p-4 rounded-lg ${darkMode ? 'bg-green-900' : 'bg-green-100'}`}>
                       <div className="flex items-center gap-2">
-                        <Check />
+                        <span>✅</span>
                         <span className={`font-semibold ${darkMode ? 'text-green-200' : 'text-green-800'}`}>Completed</span>
                       </div>
                       <p className={`text-2xl font-bold ${darkMode ? 'text-green-100' : 'text-green-900'}`}>{completedClasses}</p>
                     </div>
                     <div className={`p-4 rounded-lg ${darkMode ? 'bg-orange-900' : 'bg-orange-100'}`}>
                       <div className="flex items-center gap-2">
-                        <BookOpen />
+                        <span>📖</span>
                         <span className={`font-semibold ${darkMode ? 'text-orange-200' : 'text-orange-800'}`}>Remaining</span>
                       </div>
                       <p className={`text-2xl font-bold ${darkMode ? 'text-orange-100' : 'text-orange-900'}`}>{remainingClasses}</p>
                     </div>
                     <div className={`p-4 rounded-lg ${darkMode ? 'bg-purple-900' : 'bg-purple-100'}`}>
                       <div className="flex items-center gap-2">
-                        <Clock />
+                        <span>⏰</span>
                         <span className={`font-semibold ${darkMode ? 'text-purple-200' : 'text-purple-800'}`}>Est. Time</span>
                       </div>
                       <p className={`text-lg font-bold ${darkMode ? 'text-purple-100' : 'text-purple-900'}`}>
@@ -301,7 +213,7 @@
                     </div>
                     <div className={`p-4 rounded-lg ${darkMode ? 'bg-indigo-900' : 'bg-indigo-100'}`}>
                       <div className="flex items-center gap-2">
-                        <Target />
+                        <span>🎓</span>
                         <span className={`font-semibold ${darkMode ? 'text-indigo-200' : 'text-indigo-800'}`}>Credits</span>
                       </div>
                       <p className={`text-lg font-bold ${darkMode ? 'text-indigo-100' : 'text-indigo-900'}`}>
@@ -310,7 +222,6 @@
                     </div>
                   </div>
 
-                  {/* Start Date Picker */}
                   <div className="mb-6">
                     <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                       Study Start Date:
@@ -329,7 +240,6 @@
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Classes List */}
                   <div className={`rounded-lg shadow-lg p-6 transition-colors ${
                     darkMode ? 'bg-gray-800' : 'bg-white'
                   }`}>
@@ -337,19 +247,18 @@
                       <h2 className={`text-xl font-bold flex items-center gap-2 ${
                         darkMode ? 'text-white' : 'text-gray-800'
                       }`}>
-                        <BookOpen />
+                        <span>📚</span>
                         Classes & Estimates
                       </h2>
                       <button
                         onClick={() => setShowAddClass(!showAddClass)}
                         className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-1"
                       >
-                        <Plus />
+                        <span>➕</span>
                         Add Class
                       </button>
                     </div>
 
-                    {/* Add Class Form */}
                     {showAddClass && (
                       <div className={`border rounded-lg p-4 mb-4 ${
                         darkMode ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'
@@ -367,20 +276,23 @@
                                 : 'bg-white border-gray-300'
                             }`}
                           />
-                          <div className="flex gap-2">
-                            <input
-                              type="number"
-                              min="1"
-                              max="6"
-                              placeholder="Credits"
-                              value={newClass.credits}
-                              onChange={(e) => setNewClass({...newClass, credits: e.target.value})}
-                              className={`w-20 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                                darkMode 
-                                  ? 'bg-gray-600 border-gray-500 text-white' 
-                                  : 'bg-white border-gray-300'
-                              }`}
-                            />
+                          <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1">
+                              <input
+                                type="number"
+                                min="1"
+                                max="6"
+                                placeholder="Credits"
+                                value={newClass.credits}
+                                onChange={(e) => setNewClass({...newClass, credits: e.target.value})}
+                                className={`w-20 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                  darkMode 
+                                    ? 'bg-gray-600 border-gray-500 text-white' 
+                                    : 'bg-white border-gray-300'
+                                }`}
+                              />
+                              <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>credits</span>
+                            </div>
                             <label className="flex items-center gap-2">
                               <input
                                 type="checkbox"
@@ -431,70 +343,82 @@
                                       : (darkMode ? 'border-gray-500 hover:border-green-400' : 'border-gray-300 hover:border-green-400')
                                   }`}
                                 >
-                                  {cls.completed && <Check className="w-3 h-3" />}
+                                  {cls.completed && '✓'}
                                 </button>
                                 
                                 {editingClass === cls.id ? (
-                                  <div className="flex-1 flex gap-2">
-                                    <input
-                                      type="text"
-                                      value={editForm.name}
-                                      onChange={(e) => setEditForm({...editForm, name: e.target.value})}
-                                      className={`flex-1 px-2 py-1 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-blue-500 ${
-                                        darkMode 
-                                          ? 'bg-gray-600 border-gray-500 text-white' 
-                                          : 'bg-white border-gray-300'
-                                      }`}
-                                    />
-                                    <input
-                                      type="number"
-                                      min="1"
-                                      max="6"
-                                      value={editForm.credits}
-                                      onChange={(e) => setEditForm({...editForm, credits: e.target.value})}
-                                      className={`w-16 px-2 py-1 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-blue-500 ${
-                                        darkMode 
-                                          ? 'bg-gray-600 border-gray-500 text-white' 
-                                          : 'bg-white border-gray-300'
-                                      }`}
-                                    />
-                                    <button
-                                      onClick={saveEdit}
-                                      className="bg-green-600 text-white px-2 py-1 rounded text-sm hover:bg-green-700"
-                                    >
-                                      Save
-                                    </button>
-                                    <button
-                                      onClick={cancelEdit}
-                                      className={`px-2 py-1 rounded text-sm ${
-                                        darkMode 
-                                          ? 'bg-gray-600 text-white hover:bg-gray-500' 
-                                          : 'bg-gray-300 text-gray-700 hover:bg-gray-400'
-                                      }`}
-                                    >
-                                      Cancel
-                                    </button>
+                                  <div className="flex-1">
+                                    <div className="flex gap-2 mb-2">
+                                      <input
+                                        type="text"
+                                        value={editForm.name}
+                                        onChange={(e) => setEditForm({...editForm, name: e.target.value})}
+                                        className={`flex-1 px-2 py-1 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-blue-500 ${
+                                          darkMode 
+                                            ? 'bg-gray-600 border-gray-500 text-white' 
+                                            : 'bg-white border-gray-300'
+                                        }`}
+                                        placeholder="Class name"
+                                      />
+                                    </div>
+                                    <div className="flex gap-2">
+                                      <div className="flex items-center gap-1">
+                                        <input
+                                          type="number"
+                                          min="1"
+                                          max="6"
+                                          value={editForm.credits}
+                                          onChange={(e) => setEditForm({...editForm, credits: e.target.value})}
+                                          className={`w-16 px-2 py-1 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-blue-500 ${
+                                            darkMode 
+                                              ? 'bg-gray-600 border-gray-500 text-white' 
+                                              : 'bg-white border-gray-300'
+                                          }`}
+                                        />
+                                        <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>credits</span>
+                                      </div>
+                                      <button
+                                        onClick={saveEdit}
+                                        className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 transition-colors"
+                                      >
+                                        Save
+                                      </button>
+                                      <button
+                                        onClick={cancelEdit}
+                                        className={`px-3 py-1 rounded text-sm transition-colors ${
+                                          darkMode 
+                                            ? 'bg-gray-600 text-white hover:bg-gray-500' 
+                                            : 'bg-gray-300 text-gray-700 hover:bg-gray-400'
+                                        }`}
+                                      >
+                                        Cancel
+                                      </button>
+                                    </div>
                                   </div>
                                 ) : (
-                                  <>
-                                    <h3 className={`font-medium ${
-                                      cls.completed 
-                                        ? (darkMode ? 'line-through text-gray-400' : 'line-through text-gray-500') 
-                                        : (darkMode ? 'text-white' : 'text-gray-800')
-                                    }`}>
-                                      {cls.name}
-                                    </h3>
-                                    <span className={`text-sm px-2 py-1 rounded ${
-                                      darkMode ? 'bg-gray-600 text-gray-300' : 'bg-gray-200 text-gray-700'
-                                    }`}>
-                                      {cls.credits} credits
-                                    </span>
-                                    {cls.priority && (
-                                      <span className="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full">
-                                        Priority
-                                      </span>
-                                    )}
-                                    <div className="flex gap-1 ml-auto">
+                                  <div className="flex items-start justify-between flex-1">
+                                    <div className="flex-1">
+                                      <h3 className={`font-medium mb-1 ${
+                                        cls.completed 
+                                          ? (darkMode ? 'line-through text-gray-400' : 'line-through text-gray-500') 
+                                          : (darkMode ? 'text-white' : 'text-gray-800')
+                                      }`}>
+                                        {cls.name}
+                                      </h3>
+                                      <div className="flex items-center gap-2">
+                                        <span className={`text-sm px-2 py-1 rounded font-medium min-w-fit ${
+                                          darkMode ? 'bg-gray-600 text-gray-300' : 'bg-gray-200 text-gray-700'
+                                        }`}>
+                                          {cls.credits} credits
+                                        </span>
+                                        {cls.priority && (
+                                          <span className="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full font-medium">
+                                            Priority
+                                          </span>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <div className="flex gap-1 ml-2">
                                       <button
                                         onClick={() => startEditing(cls)}
                                         className={`p-1 rounded transition-colors ${
@@ -503,16 +427,16 @@
                                             : 'hover:bg-gray-200 text-gray-500 hover:text-gray-700'
                                         }`}
                                       >
-                                        <Edit />
+                                        ✏️
                                       </button>
                                       <button
                                         onClick={() => deleteClass(cls.id)}
                                         className="p-1 rounded hover:bg-red-100 text-red-500 hover:text-red-700 transition-colors"
                                       >
-                                        <Trash />
+                                        🗑️
                                       </button>
                                     </div>
-                                  </>
+                                  </div>
                                 )}
                               </div>
                               
@@ -571,8 +495,7 @@
                                   </div>
                                   {(cls.estimatedWeeks > 0 || cls.estimatedDays > 0) && !cls.completed && (
                                     <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full flex items-center gap-1">
-                                      <Check className="w-3 h-3" />
-                                      Set
+                                      ✅ Set
                                     </span>
                                   )}
                                 </div>
@@ -584,20 +507,19 @@
                     </div>
                   </div>
 
-                  {/* Timeline View */}
                   <div className={`rounded-lg shadow-lg p-6 transition-colors ${
                     darkMode ? 'bg-gray-800' : 'bg-white'
                   }`}>
                     <h2 className={`text-xl font-bold mb-4 flex items-center gap-2 ${
                       darkMode ? 'text-white' : 'text-gray-800'
                     }`}>
-                      <Calendar />
+                      <span>📅</span>
                       Study Timeline
                     </h2>
                     
                     {timeline.length === 0 ? (
                       <div className={`text-center py-8 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                        <Calendar />
+                        <div className="text-4xl mb-3">📅</div>
                         <p>Add estimated weeks to see your timeline</p>
                       </div>
                     ) : (
@@ -647,10 +569,19 @@
                     )}
                   </div>
                 </div>
+
+                <div className={`mt-6 p-4 rounded-lg text-center ${
+                  darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white text-gray-600'
+                }`}>
+                  <p className="text-sm">
+                    💾 <strong>Want to save your progress?</strong> When you deploy this to GitHub Pages, 
+                    add localStorage code to automatically save your data between sessions!
+                  </p>
+                </div>
               </div>
             </div>
           );
-        };
+        }
 
         ReactDOM.render(<StudyPlanner />, document.getElementById('root'));
     </script>
