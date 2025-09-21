@@ -14,22 +14,42 @@
 
     <script type="text/babel">
         function StudyPlanner() {
-          const [darkMode, setDarkMode] = React.useState(false);
-          const [classes, setClasses] = React.useState([
-            { id: 1, name: "Digital Forensics in Cybersecurity – D431", credits: 3, priority: true, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
-            { id: 2, name: "Data Management - Foundations – D426", credits: 3, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
-            { id: 3, name: "Data Management - Applications – D427", credits: 3, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
-            { id: 4, name: "Information Systems Security – C845", credits: 4, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
-            { id: 5, name: "Introduction to Cryptography – D334", credits: 3, priority: true, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
-            { id: 6, name: "Business of IT - Project Management – D324", credits: 3, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
-            { id: 7, name: "Linux Foundations – D281", credits: 4, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
-            { id: 8, name: "Introduction to Programming in Python – D335", credits: 3, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
-            { id: 9, name: "Managing Information Security – C843", credits: 4, priority: true, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
-            { id: 10, name: "Cyber Defense and Countermeasures – D340", credits: 3, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
-            { id: 11, name: "Managing Cloud Security – D320", credits: 3, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
-            { id: 12, name: "Penetration Testing and Vulnerability Analysis – D332", credits: 4, priority: true, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
-            { id: 13, name: "IT Capstone Written Project – C769", credits: 4, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" }
-          ]);
+          // Load saved data or use defaults
+          const loadSavedData = () => {
+            try {
+              const savedClasses = localStorage.getItem('studyPlannerClasses');
+              const savedDarkMode = localStorage.getItem('studyPlannerDarkMode');
+              
+              return {
+                classes: savedClasses ? JSON.parse(savedClasses) : [
+                  { id: 1, name: "Digital Forensics in Cybersecurity – D431", credits: 3, priority: true, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
+                  { id: 2, name: "Data Management - Foundations – D426", credits: 3, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
+                  { id: 3, name: "Data Management - Applications – D427", credits: 3, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
+                  { id: 4, name: "Information Systems Security – C845", credits: 4, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
+                  { id: 5, name: "Introduction to Cryptography – D334", credits: 3, priority: true, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
+                  { id: 6, name: "Business of IT - Project Management – D324", credits: 3, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
+                  { id: 7, name: "Linux Foundations – D281", credits: 4, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
+                  { id: 8, name: "Introduction to Programming in Python – D335", credits: 3, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
+                  { id: 9, name: "Managing Information Security – C843", credits: 4, priority: true, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
+                  { id: 10, name: "Cyber Defense and Countermeasures – D340", credits: 3, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
+                  { id: 11, name: "Managing Cloud Security – D320", credits: 3, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
+                  { id: 12, name: "Penetration Testing and Vulnerability Analysis – D332", credits: 4, priority: true, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
+                  { id: 13, name: "IT Capstone Written Project – C769", credits: 4, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" }
+                ],
+                darkMode: savedDarkMode ? JSON.parse(savedDarkMode) : false
+              };
+            } catch (error) {
+              console.error('Error loading saved data:', error);
+              return {
+                classes: [],
+                darkMode: false
+              };
+            }
+          };
+
+          const initialData = loadSavedData();
+          const [darkMode, setDarkMode] = React.useState(initialData.darkMode);
+          const [classes, setClasses] = React.useState(initialData.classes);
 
           const [startDate, setStartDate] = React.useState(new Date().toISOString().split('T')[0]);
           const [editingClass, setEditingClass] = React.useState(null);
@@ -39,6 +59,23 @@
           const [currentCalendarDate, setCurrentCalendarDate] = React.useState(new Date());
           const [deletedClass, setDeletedClass] = React.useState(null);
           const [showUndo, setShowUndo] = React.useState(false);
+
+          // Save data to localStorage whenever classes or darkMode changes
+          React.useEffect(() => {
+            try {
+              localStorage.setItem('studyPlannerClasses', JSON.stringify(classes));
+            } catch (error) {
+              console.error('Error saving classes:', error);
+            }
+          }, [classes]);
+
+          React.useEffect(() => {
+            try {
+              localStorage.setItem('studyPlannerDarkMode', JSON.stringify(darkMode));
+            } catch (error) {
+              console.error('Error saving dark mode:', error);
+            }
+          }, [darkMode]);
 
           const updateEstimatedWeeks = (id, weeks) => {
             setClasses(prev => prev.map(cls => 
@@ -109,6 +146,44 @@
               setClasses(prev => [...prev, deletedClass]);
               setDeletedClass(null);
               setShowUndo(false);
+            }
+          };
+
+          // Backup and restore functions
+          const exportData = () => {
+            const data = {
+              classes,
+              darkMode,
+              exportDate: new Date().toISOString()
+            };
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], {type:'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `study-planner-backup-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+          };
+
+          const importData = (event) => {
+            const file = event.target.files[0];
+            if (file) {
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                try {
+                  const data = JSON.parse(e.target.result);
+                  if (data.classes) {
+                    setClasses(data.classes);
+                  }
+                  if (typeof data.darkMode === 'boolean') {
+                    setDarkMode(data.darkMode);
+                  }
+                } catch (error) {
+                  alert('Error importing data. Please check the file format.');
+                }
+              };
+              reader.readAsText(file);
             }
           };
 
@@ -256,48 +331,77 @@
                           Track your courses and plan your study schedule
                         </p>
                       </div>
-                      <button
-                        onClick={() => setDarkMode(!darkMode)}
-                        className={`p-3 rounded-lg transition-all ${
-                          darkMode 
-                            ? 'bg-slate-800 text-slate-300 hover:bg-slate-700' 
-                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                        }`}
-                      >
-                        {darkMode ? (
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                          </svg>
-                        ) : (
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                          </svg>
-                        )}
-                      </button>
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={exportData}
+                            className={`px-3 py-2 text-sm rounded-lg transition-colors ${
+                              darkMode 
+                                ? 'bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700' 
+                                : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
+                            }`}
+                          >
+                            Export Data
+                          </button>
+                          <label className={`px-3 py-2 text-sm rounded-lg transition-colors cursor-pointer ${
+                            darkMode 
+                              ? 'bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700' 
+                              : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
+                          }`}>
+                            Import Data
+                            <input 
+                              type="file" 
+                              accept=".json" 
+                              onChange={importData} 
+                              className="hidden"
+                            />
+                          </label>
+                        </div>
+                        <button
+                          onClick={() => setDarkMode(!darkMode)}
+                          className={`p-3 rounded-lg transition-all ${
+                            darkMode 
+                              ? 'bg-slate-800 text-slate-300 hover:bg-slate-700' 
+                              : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                          }`}
+                        >
+                          {darkMode ? (
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                          ) : (
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                            </svg>
+                          )}
+                        </button>
+                      </div>
                     </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-                      <div className={`p-4 rounded-lg ${darkMode ? 'bg-blue-900/30 border border-blue-800/50' : 'bg-blue-50 border border-blue-200'}`}>
-                        <div className={`text-sm font-medium ${darkMode ? 'text-blue-300' : 'text-blue-700'}`}>Total Classes</div>
-                        <div className={`text-2xl font-bold mt-1 ${darkMode ? 'text-blue-100' : 'text-blue-900'}`}>{classes.length}</div>
+                    <div className={`grid grid-cols-2 md:grid-cols-5 gap-6 mb-8 p-6 rounded-xl border ${
+                      darkMode ? 'bg-slate-800/30 border-slate-700' : 'bg-slate-50/50 border-slate-200'
+                    }`}>
+                      <div className="text-center">
+                        <div className={`text-sm font-medium uppercase tracking-wide ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>Total Classes</div>
+                        <div className={`text-3xl font-bold mt-2 ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>{classes.length}</div>
                       </div>
-                      <div className={`p-4 rounded-lg ${darkMode ? 'bg-emerald-900/30 border border-emerald-800/50' : 'bg-emerald-50 border border-emerald-200'}`}>
-                        <div className={`text-sm font-medium ${darkMode ? 'text-emerald-300' : 'text-emerald-700'}`}>Completed</div>
-                        <div className={`text-2xl font-bold mt-1 ${darkMode ? 'text-emerald-100' : 'text-emerald-900'}`}>{completedClasses}</div>
+                      <div className="text-center">
+                        <div className={`text-sm font-medium uppercase tracking-wide ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>Completed</div>
+                        <div className={`text-3xl font-bold mt-2 ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>{completedClasses}</div>
                       </div>
-                      <div className={`p-4 rounded-lg ${darkMode ? 'bg-orange-900/30 border border-orange-800/50' : 'bg-orange-50 border border-orange-200'}`}>
-                        <div className={`text-sm font-medium ${darkMode ? 'text-orange-300' : 'text-orange-700'}`}>Remaining</div>
-                        <div className={`text-2xl font-bold mt-1 ${darkMode ? 'text-orange-100' : 'text-orange-900'}`}>{remainingClasses}</div>
+                      <div className="text-center">
+                        <div className={`text-sm font-medium uppercase tracking-wide ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>Remaining</div>
+                        <div className={`text-3xl font-bold mt-2 ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>{remainingClasses}</div>
                       </div>
-                      <div className={`p-4 rounded-lg ${darkMode ? 'bg-purple-900/30 border border-purple-800/50' : 'bg-purple-50 border border-purple-200'}`}>
-                        <div className={`text-sm font-medium ${darkMode ? 'text-purple-300' : 'text-purple-700'}`}>Est. Time</div>
-                        <div className={`text-lg font-bold mt-1 ${darkMode ? 'text-purple-100' : 'text-purple-900'}`}>
+                      <div className="text-center">
+                        <div className={`text-sm font-medium uppercase tracking-wide ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>Est. Time</div>
+                        <div className={`text-2xl font-bold mt-2 ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>
                           {totalWeeks}w {remainingDays}d
                         </div>
                       </div>
-                      <div className={`p-4 rounded-lg ${darkMode ? 'bg-indigo-900/30 border border-indigo-800/50' : 'bg-indigo-50 border border-indigo-200'}`}>
-                        <div className={`text-sm font-medium ${darkMode ? 'text-indigo-300' : 'text-indigo-700'}`}>Credits</div>
-                        <div className={`text-lg font-bold mt-1 ${darkMode ? 'text-indigo-100' : 'text-indigo-900'}`}>
+                      <div className="text-center">
+                        <div className={`text-sm font-medium uppercase tracking-wide ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>Credits</div>
+                        <div className={`text-2xl font-bold mt-2 ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>
                           {completedCredits}/{totalCredits}
                         </div>
                       </div>
