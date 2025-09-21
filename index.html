@@ -13,47 +13,32 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState } = React;
-
         function StudyPlanner() {
-          const [darkMode, setDarkMode] = useState(false);
-          const [classes, setClasses] = useState([
-            { id: 1, name: "Digital Forensics in Cybersecurity – D431", credits: 3, priority: true, estimatedWeeks: 0, estimatedDays: 0, completed: false },
-            { id: 2, name: "Data Management - Foundations – D426", credits: 3, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false },
-            { id: 3, name: "Data Management - Applications – D427", credits: 3, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false },
-            { id: 4, name: "Information Systems Security – C845", credits: 4, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false },
-            { id: 5, name: "Introduction to Cryptography – D334", credits: 3, priority: true, estimatedWeeks: 0, estimatedDays: 0, completed: false },
-            { id: 6, name: "Business of IT - Project Management – D324", credits: 3, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false },
-            { id: 7, name: "Linux Foundations – D281", credits: 4, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false },
-            { id: 8, name: "Introduction to Programming in Python – D335", credits: 3, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false },
-            { id: 9, name: "Managing Information Security – C843", credits: 4, priority: true, estimatedWeeks: 0, estimatedDays: 0, completed: false },
-            { id: 10, name: "Cyber Defense and Countermeasures – D340", credits: 3, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false },
-            { id: 11, name: "Managing Cloud Security – D320", credits: 3, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false },
-            { id: 12, name: "Penetration Testing and Vulnerability Analysis – D332", credits: 4, priority: true, estimatedWeeks: 0, estimatedDays: 0, completed: false },
-            { id: 13, name: "IT Capstone Written Project – C769", credits: 4, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false }
+          const [darkMode, setDarkMode] = React.useState(false);
+          const [classes, setClasses] = React.useState([
+            { id: 1, name: "Digital Forensics in Cybersecurity – D431", credits: 3, priority: true, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
+            { id: 2, name: "Data Management - Foundations – D426", credits: 3, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
+            { id: 3, name: "Data Management - Applications – D427", credits: 3, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
+            { id: 4, name: "Information Systems Security – C845", credits: 4, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
+            { id: 5, name: "Introduction to Cryptography – D334", credits: 3, priority: true, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
+            { id: 6, name: "Business of IT - Project Management – D324", credits: 3, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
+            { id: 7, name: "Linux Foundations – D281", credits: 4, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
+            { id: 8, name: "Introduction to Programming in Python – D335", credits: 3, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
+            { id: 9, name: "Managing Information Security – C843", credits: 4, priority: true, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
+            { id: 10, name: "Cyber Defense and Countermeasures – D340", credits: 3, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
+            { id: 11, name: "Managing Cloud Security – D320", credits: 3, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
+            { id: 12, name: "Penetration Testing and Vulnerability Analysis – D332", credits: 4, priority: true, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" },
+            { id: 13, name: "IT Capstone Written Project – C769", credits: 4, priority: false, estimatedWeeks: 0, estimatedDays: 0, completed: false, startDate: "", notes: "" }
           ]);
 
-          const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
-          const [editingClass, setEditingClass] = useState(null);
-          const [editForm, setEditForm] = useState({ name: '', credits: 3 });
-          const [newClass, setNewClass] = useState({ name: '', credits: 3, priority: false });
-          const [showAddClass, setShowAddClass] = useState(false);
-                        // Add localStorage saving (for deployed version only)
-            React.useEffect(() => {
-              const saved = localStorage.getItem('studyPlannerData');
-              if (saved) {
-                const data = JSON.parse(saved);
-                if (data.classes) setClasses(data.classes);
-                if (data.startDate) setStartDate(data.startDate);
-                if (data.darkMode !== undefined) setDarkMode(data.darkMode);
-              }
-            }, []);
-            
-            React.useEffect(() => {
-              localStorage.setItem('studyPlannerData', JSON.stringify({
-                classes, startDate, darkMode
-              }));
-            }, [classes, startDate, darkMode]);
+          const [startDate, setStartDate] = React.useState(new Date().toISOString().split('T')[0]);
+          const [editingClass, setEditingClass] = React.useState(null);
+          const [editForm, setEditForm] = React.useState({ name: '', credits: 3, priority: false, startDate: '', notes: '' });
+          const [newClass, setNewClass] = React.useState({ name: '', credits: 3, priority: false, startDate: '', notes: '' });
+          const [showAddClass, setShowAddClass] = React.useState(false);
+          const [currentCalendarDate, setCurrentCalendarDate] = React.useState(new Date());
+          const [deletedClass, setDeletedClass] = React.useState(null);
+          const [showUndo, setShowUndo] = React.useState(false);
 
           const updateEstimatedWeeks = (id, weeks) => {
             setClasses(prev => prev.map(cls => 
@@ -75,23 +60,56 @@
 
           const startEditing = (cls) => {
             setEditingClass(cls.id);
-            setEditForm({ name: cls.name, credits: cls.credits });
+            setEditForm({ 
+              name: cls.name, 
+              credits: cls.credits, 
+              priority: cls.priority,
+              startDate: cls.startDate || '',
+              notes: cls.notes || ''
+            });
           };
 
           const saveEdit = () => {
             setClasses(prev => prev.map(cls => 
-              cls.id === editingClass ? { ...cls, name: editForm.name, credits: parseInt(editForm.credits) } : cls
+              cls.id === editingClass ? { 
+                ...cls, 
+                name: editForm.name, 
+                credits: parseInt(editForm.credits), 
+                priority: editForm.priority,
+                startDate: editForm.startDate,
+                notes: editForm.notes 
+              } : cls
             ));
             setEditingClass(null);
           };
 
           const cancelEdit = () => {
             setEditingClass(null);
-            setEditForm({ name: '', credits: 3 });
+            setEditForm({ name: '', credits: 3, priority: false, startDate: '', notes: '' });
           };
 
           const deleteClass = (id) => {
-            setClasses(prev => prev.filter(cls => cls.id !== id));
+            const classToDelete = classes.find(cls => cls.id === id);
+            
+            if (classToDelete) {
+              setDeletedClass(classToDelete);
+              setShowUndo(true);
+              
+              setClasses(prev => prev.filter(cls => cls.id !== id));
+              
+              setTimeout(() => {
+                setShowUndo(false);
+                setDeletedClass(null);
+              }, 5000);
+            }
+          };
+
+          const undoDelete = () => {
+            if (deletedClass) {
+              setClasses(prev => [...prev, deletedClass]);
+              setDeletedClass(null);
+              setShowUndo(false);
+            }
           };
 
           const addClass = () => {
@@ -113,14 +131,13 @@
           };
 
           const calculateTimeline = () => {
-            let currentDate = new Date(startDate);
             const timeline = [];
             
-            classes.filter(cls => !cls.completed && (cls.estimatedWeeks > 0 || cls.estimatedDays > 0)).forEach(cls => {
-              const startDateForClass = new Date(currentDate);
+            classes.filter(cls => !cls.completed && cls.startDate && (cls.estimatedWeeks > 0 || cls.estimatedDays > 0)).forEach(cls => {
+              const startDateForClass = new Date(cls.startDate + 'T00:00:00');
               const totalDays = (cls.estimatedWeeks * 7) + cls.estimatedDays;
-              currentDate.setDate(currentDate.getDate() + totalDays);
-              const endDateForClass = new Date(currentDate);
+              const endDateForClass = new Date(startDateForClass);
+              endDateForClass.setDate(endDateForClass.getDate() + totalDays);
               
               timeline.push({
                 ...cls,
@@ -129,6 +146,8 @@
                 totalDays
               });
             });
+            
+            timeline.sort((a, b) => a.startDate - b.startDate);
             
             return timeline;
           };
@@ -146,138 +165,334 @@
             return date.toLocaleDateString('en-US', { 
               month: 'short', 
               day: 'numeric', 
-              year: 'numeric' 
+              year: 'numeric'
             });
           };
 
+          const monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"];
+          
+          const navigateCalendar = (direction) => {
+            setCurrentCalendarDate(prev => {
+              const newDate = new Date(prev);
+              newDate.setMonth(prev.getMonth() + direction);
+              return newDate;
+            });
+          };
+
+          const getClassColor = (classId) => {
+            const colors = [
+              'bg-blue-500', 'bg-emerald-500', 'bg-purple-500', 'bg-rose-500', 
+              'bg-amber-500', 'bg-pink-500', 'bg-indigo-500', 'bg-teal-500',
+              'bg-orange-500', 'bg-cyan-500', 'bg-lime-500', 'bg-violet-500',
+              'bg-slate-500'
+            ];
+            return colors[classId % colors.length];
+          };
+
+          const generateCalendar = () => {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDayOfWeek = firstDay.getDay();
+            
+            const calendar = [];
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            for (let i = 0; i < startingDayOfWeek; i++) {
+              calendar.push(null);
+            }
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+              const currentDate = new Date(year, month, day);
+              const isToday = currentDate.toDateString() === today.toDateString();
+              const isPast = currentDate < today;
+              const isFuture = currentDate > today;
+              
+              const activeClasses = timeline.filter(cls => {
+                const startDate = new Date(cls.startDate);
+                const endDate = new Date(cls.endDate);
+                startDate.setHours(0, 0, 0, 0);
+                endDate.setHours(23, 59, 59, 999);
+                return currentDate >= startDate && currentDate <= endDate;
+              });
+              
+              calendar.push({
+                day,
+                date: currentDate,
+                isToday,
+                isPast,
+                isFuture,
+                activeClasses
+              });
+            }
+            
+            return calendar;
+          };
+
+          const calendarDays = generateCalendar();
+
           return (
-            <div className={`min-h-screen transition-colors duration-300 ${
+            <div className={`min-h-screen transition-all duration-300 ${
               darkMode 
-                ? 'bg-gray-900 text-white' 
-                : 'bg-gradient-to-br from-blue-50 to-indigo-100'
+                ? 'bg-slate-950 text-slate-100' 
+                : 'bg-slate-50'
             }`}>
-              <div className="max-w-6xl mx-auto p-6">
+              <div className="max-w-7xl mx-auto p-6">
                 
-                <div className={`rounded-lg shadow-lg p-6 mb-6 transition-colors ${
-                  darkMode ? 'bg-gray-800' : 'bg-white'
+                <div className={`rounded-xl border transition-all duration-300 ${
+                  darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
                 }`}>
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-3">
-                      <div className="text-blue-600 w-8 h-8">📚</div>
-                      <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-                        Academic Study Planner
-                      </h1>
+                  <div className="p-8">
+                    <div className="flex items-center justify-between mb-8">
+                      <div>
+                        <h1 className={`text-3xl font-bold tracking-tight ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                          Academic Study Planner
+                        </h1>
+                        <p className={`text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                          Track your courses and plan your study schedule
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => setDarkMode(!darkMode)}
+                        className={`p-3 rounded-lg transition-all ${
+                          darkMode 
+                            ? 'bg-slate-800 text-slate-300 hover:bg-slate-700' 
+                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                        }`}
+                      >
+                        {darkMode ? (
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                          </svg>
+                        ) : (
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                          </svg>
+                        )}
+                      </button>
                     </div>
-                    <button
-                      onClick={() => setDarkMode(!darkMode)}
-                      className={`p-2 rounded-lg transition-colors ${
-                        darkMode 
-                          ? 'bg-yellow-500 text-yellow-900 hover:bg-yellow-400' 
-                          : 'bg-gray-700 text-yellow-400 hover:bg-gray-600'
-                      }`}
-                    >
-                      {darkMode ? '☀️' : '🌙'}
-                    </button>
-                  </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
-                    <div className={`p-4 rounded-lg ${darkMode ? 'bg-blue-900' : 'bg-blue-100'}`}>
-                      <div className="flex items-center gap-2">
-                        <span>🎯</span>
-                        <span className={`font-semibold ${darkMode ? 'text-blue-200' : 'text-blue-800'}`}>Total Classes</span>
+                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+                      <div className={`p-4 rounded-lg ${darkMode ? 'bg-blue-900/30 border border-blue-800/50' : 'bg-blue-50 border border-blue-200'}`}>
+                        <div className={`text-sm font-medium ${darkMode ? 'text-blue-300' : 'text-blue-700'}`}>Total Classes</div>
+                        <div className={`text-2xl font-bold mt-1 ${darkMode ? 'text-blue-100' : 'text-blue-900'}`}>{classes.length}</div>
                       </div>
-                      <p className={`text-2xl font-bold ${darkMode ? 'text-blue-100' : 'text-blue-900'}`}>{classes.length}</p>
-                    </div>
-                    <div className={`p-4 rounded-lg ${darkMode ? 'bg-green-900' : 'bg-green-100'}`}>
-                      <div className="flex items-center gap-2">
-                        <span>✅</span>
-                        <span className={`font-semibold ${darkMode ? 'text-green-200' : 'text-green-800'}`}>Completed</span>
+                      <div className={`p-4 rounded-lg ${darkMode ? 'bg-emerald-900/30 border border-emerald-800/50' : 'bg-emerald-50 border border-emerald-200'}`}>
+                        <div className={`text-sm font-medium ${darkMode ? 'text-emerald-300' : 'text-emerald-700'}`}>Completed</div>
+                        <div className={`text-2xl font-bold mt-1 ${darkMode ? 'text-emerald-100' : 'text-emerald-900'}`}>{completedClasses}</div>
                       </div>
-                      <p className={`text-2xl font-bold ${darkMode ? 'text-green-100' : 'text-green-900'}`}>{completedClasses}</p>
-                    </div>
-                    <div className={`p-4 rounded-lg ${darkMode ? 'bg-orange-900' : 'bg-orange-100'}`}>
-                      <div className="flex items-center gap-2">
-                        <span>📖</span>
-                        <span className={`font-semibold ${darkMode ? 'text-orange-200' : 'text-orange-800'}`}>Remaining</span>
+                      <div className={`p-4 rounded-lg ${darkMode ? 'bg-orange-900/30 border border-orange-800/50' : 'bg-orange-50 border border-orange-200'}`}>
+                        <div className={`text-sm font-medium ${darkMode ? 'text-orange-300' : 'text-orange-700'}`}>Remaining</div>
+                        <div className={`text-2xl font-bold mt-1 ${darkMode ? 'text-orange-100' : 'text-orange-900'}`}>{remainingClasses}</div>
                       </div>
-                      <p className={`text-2xl font-bold ${darkMode ? 'text-orange-100' : 'text-orange-900'}`}>{remainingClasses}</p>
-                    </div>
-                    <div className={`p-4 rounded-lg ${darkMode ? 'bg-purple-900' : 'bg-purple-100'}`}>
-                      <div className="flex items-center gap-2">
-                        <span>⏰</span>
-                        <span className={`font-semibold ${darkMode ? 'text-purple-200' : 'text-purple-800'}`}>Est. Time</span>
+                      <div className={`p-4 rounded-lg ${darkMode ? 'bg-purple-900/30 border border-purple-800/50' : 'bg-purple-50 border border-purple-200'}`}>
+                        <div className={`text-sm font-medium ${darkMode ? 'text-purple-300' : 'text-purple-700'}`}>Est. Time</div>
+                        <div className={`text-lg font-bold mt-1 ${darkMode ? 'text-purple-100' : 'text-purple-900'}`}>
+                          {totalWeeks}w {remainingDays}d
+                        </div>
                       </div>
-                      <p className={`text-lg font-bold ${darkMode ? 'text-purple-100' : 'text-purple-900'}`}>
-                        {totalWeeks}w {remainingDays}d
-                      </p>
-                    </div>
-                    <div className={`p-4 rounded-lg ${darkMode ? 'bg-indigo-900' : 'bg-indigo-100'}`}>
-                      <div className="flex items-center gap-2">
-                        <span>🎓</span>
-                        <span className={`font-semibold ${darkMode ? 'text-indigo-200' : 'text-indigo-800'}`}>Credits</span>
+                      <div className={`p-4 rounded-lg ${darkMode ? 'bg-indigo-900/30 border border-indigo-800/50' : 'bg-indigo-50 border border-indigo-200'}`}>
+                        <div className={`text-sm font-medium ${darkMode ? 'text-indigo-300' : 'text-indigo-700'}`}>Credits</div>
+                        <div className={`text-lg font-bold mt-1 ${darkMode ? 'text-indigo-100' : 'text-indigo-900'}`}>
+                          {completedCredits}/{totalCredits}
+                        </div>
                       </div>
-                      <p className={`text-lg font-bold ${darkMode ? 'text-indigo-100' : 'text-indigo-900'}`}>
-                        {completedCredits}/{totalCredits}
-                      </p>
                     </div>
-                  </div>
 
-                  <div className="mb-6">
-                    <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                      Study Start Date:
-                    </label>
-                    <input
-                      type="date"
-                      value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                      className={`px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        darkMode 
-                          ? 'bg-gray-700 border-gray-600 text-white' 
-                          : 'bg-white border-gray-300'
-                      }`}
-                    />
+                    {/* Calendar View */}
+                    <div className={`rounded-xl border p-6 ${
+                      darkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-slate-50 border-slate-200'
+                    }`}>
+                      <div className="flex items-center justify-between mb-6">
+                        <h2 className={`text-xl font-semibold ${
+                          darkMode ? 'text-slate-100' : 'text-slate-900'
+                        }`}>
+                          Study Calendar
+                        </h2>
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => navigateCalendar(-1)}
+                            className={`p-2 rounded-lg transition-colors ${
+                              darkMode 
+                                ? 'hover:bg-slate-700 text-slate-400 hover:text-slate-200' 
+                                : 'hover:bg-slate-200 text-slate-600 hover:text-slate-800'
+                            }`}
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                            </svg>
+                          </button>
+                          <span className={`text-lg font-medium px-4 ${
+                            darkMode ? 'text-slate-200' : 'text-slate-800'
+                          }`}>
+                            {monthNames[currentCalendarDate.getMonth()]} {currentCalendarDate.getFullYear()}
+                          </span>
+                          <button
+                            onClick={() => navigateCalendar(1)}
+                            className={`p-2 rounded-lg transition-colors ${
+                              darkMode 
+                                ? 'hover:bg-slate-700 text-slate-400 hover:text-slate-200' 
+                                : 'hover:bg-slate-200 text-slate-600 hover:text-slate-800'
+                            }`}
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-7 gap-1 mb-3">
+                        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                          <div key={day} className={`text-xs font-semibold text-center py-3 ${
+                            darkMode ? 'text-slate-400' : 'text-slate-600'
+                          }`}>
+                            {day}
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="grid grid-cols-7 gap-2">
+                        {calendarDays.map((dayInfo, index) => (
+                          <div
+                            key={index}
+                            className={`min-h-[120px] p-3 border rounded-lg text-sm relative transition-all ${
+                              !dayInfo 
+                                ? 'invisible' 
+                                : dayInfo.isToday
+                                  ? (darkMode ? 'bg-blue-900/40 border-blue-600' : 'bg-blue-100 border-blue-400')
+                                  : dayInfo.isPast && dayInfo.activeClasses.length > 0
+                                    ? (darkMode ? 'bg-emerald-900/30 border-emerald-700' : 'bg-emerald-50 border-emerald-300')
+                                    : dayInfo.isFuture && dayInfo.activeClasses.length > 0
+                                      ? (darkMode ? 'bg-purple-900/30 border-purple-700' : 'bg-purple-50 border-purple-300')
+                                      : (darkMode ? 'border-slate-700 bg-slate-800/30' : 'border-slate-200 bg-white')
+                            }`}
+                          >
+                            {dayInfo && (
+                              <>
+                                <div className="flex items-center justify-between mb-3">
+                                  <div className={`font-semibold text-lg ${
+                                    dayInfo.isToday 
+                                      ? (darkMode ? 'text-blue-300' : 'text-blue-700')
+                                      : dayInfo.isPast && dayInfo.activeClasses.length > 0
+                                        ? (darkMode ? 'text-emerald-300' : 'text-emerald-700')
+                                        : dayInfo.isFuture && dayInfo.activeClasses.length > 0
+                                          ? (darkMode ? 'text-purple-300' : 'text-purple-700')
+                                          : (darkMode ? 'text-slate-300' : 'text-slate-700')
+                                  }`}>
+                                    {dayInfo.day}
+                                  </div>
+                                  
+                                  {dayInfo.isToday && (
+                                    <div className="flex items-center gap-1">
+                                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                                      <span className={`text-xs font-medium ${darkMode ? 'text-blue-300' : 'text-blue-700'}`}>Today</span>
+                                    </div>
+                                  )}
+                                </div>
+                                
+                                <div className="space-y-1 max-h-20 overflow-y-auto">
+                                  {dayInfo.activeClasses.map((cls) => (
+                                    <div
+                                      key={cls.id}
+                                      className={`px-2 py-1 rounded text-xs font-medium text-white ${getClassColor(cls.id)}`}
+                                      title={`${cls.name} (${cls.credits} credits)`}
+                                    >
+                                      <div className="truncate font-medium">
+                                        {cls.name.split(' – ')[0].split(' ').slice(0, 3).join(' ')}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+
+                                {dayInfo.activeClasses.length > 0 && (
+                                  <div className="absolute bottom-2 right-2">
+                                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white ${
+                                      dayInfo.activeClasses.length === 1 
+                                        ? 'bg-blue-500'
+                                        : dayInfo.activeClasses.length === 2
+                                          ? 'bg-orange-500'
+                                          : 'bg-red-500'
+                                    }`}>
+                                      {dayInfo.activeClasses.length}
+                                    </div>
+                                  </div>
+                                )}
+                              </>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+
+                      {timeline.length === 0 && (
+                        <div className={`text-center py-12 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                          <p>Add time estimates to your classes to see your study schedule</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <div className={`rounded-lg shadow-lg p-6 transition-colors ${
-                    darkMode ? 'bg-gray-800' : 'bg-white'
+                {/* Undo Notification */}
+                {showUndo && (
+                  <div className={`fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
+                    darkMode ? 'bg-red-900 border border-red-800' : 'bg-red-50 border border-red-200'
                   }`}>
-                    <div className="flex items-center justify-between mb-4">
-                      <h2 className={`text-xl font-bold flex items-center gap-2 ${
-                        darkMode ? 'text-white' : 'text-gray-800'
+                    <div className="flex items-center gap-3">
+                      <span className={`text-sm ${darkMode ? 'text-red-200' : 'text-red-800'}`}>
+                        Deleted "{deletedClass?.name}"
+                      </span>
+                      <button
+                        onClick={undoDelete}
+                        className="text-sm font-medium text-red-600 hover:text-red-700 underline"
+                      >
+                        Undo
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                  <div className={`rounded-xl border p-6 ${
+                    darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
+                  }`}>
+                    <div className="flex items-center justify-between mb-6">
+                      <h2 className={`text-xl font-semibold ${
+                        darkMode ? 'text-slate-100' : 'text-slate-900'
                       }`}>
-                        <span>📚</span>
-                        Classes & Estimates
+                        Course Management
                       </h2>
                       <button
                         onClick={() => setShowAddClass(!showAddClass)}
-                        className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-1"
+                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
                       >
-                        <span>➕</span>
-                        Add Class
+                        Add Course
                       </button>
                     </div>
 
                     {showAddClass && (
-                      <div className={`border rounded-lg p-4 mb-4 ${
-                        darkMode ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'
+                      <div className={`border rounded-lg p-4 mb-6 ${
+                        darkMode ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'
                       }`}>
-                        <h3 className={`font-medium mb-3 ${darkMode ? 'text-white' : 'text-gray-800'}`}>Add New Class</h3>
-                        <div className="space-y-3">
+                        <h3 className={`font-medium mb-4 ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>Add New Course</h3>
+                        <div className="space-y-4">
                           <input
                             type="text"
-                            placeholder="Class name"
+                            placeholder="Course name"
                             value={newClass.name}
                             onChange={(e) => setNewClass({...newClass, name: e.target.value})}
-                            className={`w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                               darkMode 
-                                ? 'bg-gray-600 border-gray-500 text-white placeholder-gray-400' 
-                                : 'bg-white border-gray-300'
+                                ? 'bg-slate-700 border-slate-600 text-slate-100 placeholder-slate-400' 
+                                : 'bg-white border-slate-300'
                             }`}
                           />
-                          <div className="flex items-center gap-2">
-                            <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-2">
                               <input
                                 type="number"
                                 min="1"
@@ -285,13 +500,13 @@
                                 placeholder="Credits"
                                 value={newClass.credits}
                                 onChange={(e) => setNewClass({...newClass, credits: e.target.value})}
-                                className={`w-20 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                className={`w-20 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                                   darkMode 
-                                    ? 'bg-gray-600 border-gray-500 text-white' 
-                                    : 'bg-white border-gray-300'
+                                    ? 'bg-slate-700 border-slate-600 text-slate-100' 
+                                    : 'bg-white border-slate-300'
                                 }`}
                               />
-                              <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>credits</span>
+                              <span className={`text-sm ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>credits</span>
                             </div>
                             <label className="flex items-center gap-2">
                               <input
@@ -300,22 +515,22 @@
                                 onChange={(e) => setNewClass({...newClass, priority: e.target.checked})}
                                 className="rounded"
                               />
-                              <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Priority</span>
+                              <span className={`text-sm ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>Priority</span>
                             </label>
                           </div>
-                          <div className="flex gap-2">
+                          <div className="flex gap-3">
                             <button
                               onClick={addClass}
-                              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors"
+                              className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors"
                             >
-                              Add Class
+                              Add Course
                             </button>
                             <button
                               onClick={() => setShowAddClass(false)}
-                              className={`px-4 py-2 rounded transition-colors ${
+                              className={`px-4 py-2 rounded-lg transition-colors ${
                                 darkMode 
-                                  ? 'bg-gray-600 text-white hover:bg-gray-500' 
-                                  : 'bg-gray-300 text-gray-700 hover:bg-gray-400'
+                                  ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' 
+                                  : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
                               }`}
                             >
                               Cancel
@@ -324,180 +539,240 @@
                         </div>
                       </div>
                     )}
-                    
-                    <div className="space-y-3">
+                  
+                    <div className="space-y-3 max-h-96 overflow-y-auto">
                       {classes.map(cls => (
-                        <div key={cls.id} className={`border rounded-lg p-4 transition-colors ${
+                        <div key={cls.id} className={`border rounded-lg p-4 transition-all ${
                           cls.priority 
-                            ? (darkMode ? 'border-blue-500 bg-blue-900 bg-opacity-30' : 'border-blue-300 bg-blue-50') 
-                            : (darkMode ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-white')
+                            ? (darkMode ? 'border-blue-600/50 bg-blue-900/20' : 'border-blue-300 bg-blue-50') 
+                            : (darkMode ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-white')
                         } ${cls.completed ? 'opacity-60' : ''}`}>
-                          <div className="flex items-start justify-between">
+                          <div className="flex items-start gap-3">
+                            <button
+                              onClick={() => toggleCompleted(cls.id)}
+                              className={`w-5 h-5 rounded border-2 flex items-center justify-center mt-1 transition-colors ${
+                                cls.completed 
+                                  ? 'bg-emerald-500 border-emerald-500 text-white' 
+                                  : (darkMode ? 'border-slate-600 hover:border-emerald-400' : 'border-slate-300 hover:border-emerald-400')
+                              }`}
+                            >
+                              {cls.completed && (
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                </svg>
+                              )}
+                            </button>
+                            
                             <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-2">
-                                <button
-                                  onClick={() => toggleCompleted(cls.id)}
-                                  className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
-                                    cls.completed 
-                                      ? 'bg-green-500 border-green-500 text-white' 
-                                      : (darkMode ? 'border-gray-500 hover:border-green-400' : 'border-gray-300 hover:border-green-400')
-                                  }`}
-                                >
-                                  {cls.completed && '✓'}
-                                </button>
-                                
-                                {editingClass === cls.id ? (
-                                  <div className="flex-1">
-                                    <div className="flex gap-2 mb-2">
+                              {editingClass === cls.id ? (
+                                <div className="space-y-4">
+                                  <input
+                                    type="text"
+                                    value={editForm.name}
+                                    onChange={(e) => setEditForm({...editForm, name: e.target.value})}
+                                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                      darkMode 
+                                        ? 'bg-slate-700 border-slate-600 text-slate-100' 
+                                        : 'bg-white border-slate-300'
+                                    }`}
+                                  />
+                                  
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <div className="flex items-center gap-2">
                                       <input
-                                        type="text"
-                                        value={editForm.name}
-                                        onChange={(e) => setEditForm({...editForm, name: e.target.value})}
-                                        className={`flex-1 px-2 py-1 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-blue-500 ${
+                                        type="number"
+                                        min="1"
+                                        max="6"
+                                        value={editForm.credits}
+                                        onChange={(e) => setEditForm({...editForm, credits: e.target.value})}
+                                        className={`w-16 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                                           darkMode 
-                                            ? 'bg-gray-600 border-gray-500 text-white' 
-                                            : 'bg-white border-gray-300'
+                                            ? 'bg-slate-700 border-slate-600 text-slate-100' 
+                                            : 'bg-white border-slate-300'
                                         }`}
-                                        placeholder="Class name"
+                                      />
+                                      <span className={`text-sm ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>credits</span>
+                                    </div>
+                                    
+                                    <div className="flex items-center gap-2">
+                                      <label className={`text-sm ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>Start:</label>
+                                      <input
+                                        type="date"
+                                        value={editForm.startDate || ''}
+                                        onChange={(e) => setEditForm({...editForm, startDate: e.target.value})}
+                                        className={`px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                          darkMode 
+                                            ? 'bg-slate-700 border-slate-600 text-slate-100' 
+                                            : 'bg-white border-slate-300'
+                                        }`}
                                       />
                                     </div>
-                                    <div className="flex gap-2">
-                                      <div className="flex items-center gap-1">
-                                        <input
-                                          type="number"
-                                          min="1"
-                                          max="6"
-                                          value={editForm.credits}
-                                          onChange={(e) => setEditForm({...editForm, credits: e.target.value})}
-                                          className={`w-16 px-2 py-1 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-blue-500 ${
-                                            darkMode 
-                                              ? 'bg-gray-600 border-gray-500 text-white' 
-                                              : 'bg-white border-gray-300'
-                                          }`}
-                                        />
-                                        <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>credits</span>
-                                      </div>
-                                      <button
-                                        onClick={saveEdit}
-                                        className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 transition-colors"
-                                      >
-                                        Save
-                                      </button>
-                                      <button
-                                        onClick={cancelEdit}
-                                        className={`px-3 py-1 rounded text-sm transition-colors ${
-                                          darkMode 
-                                            ? 'bg-gray-600 text-white hover:bg-gray-500' 
-                                            : 'bg-gray-300 text-gray-700 hover:bg-gray-400'
-                                        }`}
-                                      >
-                                        Cancel
-                                      </button>
-                                    </div>
                                   </div>
-                                ) : (
-                                  <div className="flex items-start justify-between flex-1">
+                                  
+                                  <label className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer ${
+                                    editForm.priority 
+                                      ? 'border-blue-400 bg-blue-50 text-blue-700' 
+                                      : (darkMode ? 'border-slate-600 bg-slate-700 text-slate-300' : 'border-slate-300 bg-slate-50 text-slate-600')
+                                  }`}>
+                                    <input
+                                      type="checkbox"
+                                      checked={editForm.priority}
+                                      onChange={(e) => setEditForm({...editForm, priority: e.target.checked})}
+                                      className="rounded"
+                                    />
+                                    <span className="text-sm font-medium">Priority Course</span>
+                                  </label>
+
+                                  {cls.completed && (
+                                    <div>
+                                      <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                                        Course Notes:
+                                      </label>
+                                      <textarea
+                                        value={editForm.notes}
+                                        onChange={(e) => setEditForm({...editForm, notes: e.target.value})}
+                                        placeholder="Add your thoughts, what you learned, challenges, etc..."
+                                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none ${
+                                          darkMode 
+                                            ? 'bg-slate-700 border-slate-600 text-slate-100 placeholder-slate-400' 
+                                            : 'bg-white border-slate-300'
+                                        }`}
+                                        rows="3"
+                                      />
+                                    </div>
+                                  )}
+                                  
+                                  <div className="flex gap-3">
+                                    <button
+                                      onClick={saveEdit}
+                                      className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors"
+                                    >
+                                      Save Changes
+                                    </button>
+                                    <button
+                                      onClick={cancelEdit}
+                                      className={`px-4 py-2 rounded-lg transition-colors ${
+                                        darkMode 
+                                          ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' 
+                                          : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+                                      }`}
+                                    >
+                                      Cancel
+                                    </button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div>
+                                  <div className="flex items-start justify-between">
                                     <div className="flex-1">
-                                      <h3 className={`font-medium mb-1 ${
+                                      <h3 className={`font-medium ${
                                         cls.completed 
-                                          ? (darkMode ? 'line-through text-gray-400' : 'line-through text-gray-500') 
-                                          : (darkMode ? 'text-white' : 'text-gray-800')
+                                          ? (darkMode ? 'line-through text-slate-500' : 'line-through text-slate-500') 
+                                          : (darkMode ? 'text-slate-100' : 'text-slate-900')
                                       }`}>
                                         {cls.name}
                                       </h3>
-                                      <div className="flex items-center gap-2">
-                                        <span className={`text-sm px-2 py-1 rounded font-medium min-w-fit ${
-                                          darkMode ? 'bg-gray-600 text-gray-300' : 'bg-gray-200 text-gray-700'
+                                      <div className="flex items-center gap-2 mt-1">
+                                        <span className={`text-sm px-2 py-1 rounded font-medium ${
+                                          darkMode ? 'bg-slate-700 text-slate-300' : 'bg-slate-100 text-slate-700'
                                         }`}>
                                           {cls.credits} credits
                                         </span>
                                         {cls.priority && (
-                                          <span className="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full font-medium">
+                                          <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full font-medium">
                                             Priority
                                           </span>
                                         )}
+                                        {cls.startDate && (
+                                          <span className={`text-xs px-2 py-1 rounded font-medium ${
+                                            darkMode ? 'bg-purple-900/50 text-purple-200' : 'bg-purple-100 text-purple-700'
+                                          }`}>
+                                            {formatDate(new Date(cls.startDate + 'T00:00:00'))}
+                                          </span>
+                                        )}
                                       </div>
+                                      {cls.completed && cls.notes && (
+                                        <div className={`mt-3 p-3 rounded-lg text-sm ${
+                                          darkMode ? 'bg-emerald-900/30 text-emerald-200 border border-emerald-800' : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                                        }`}>
+                                          <div className="font-medium mb-1">Notes:</div>
+                                          <div className="italic">{cls.notes}</div>
+                                        </div>
+                                      )}
                                     </div>
-                                    <div className="flex gap-1 ml-2">
+                                    <div className="flex gap-2 ml-4">
                                       <button
                                         onClick={() => startEditing(cls)}
-                                        className={`p-1 rounded transition-colors ${
+                                        className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
                                           darkMode 
-                                            ? 'hover:bg-gray-600 text-gray-400 hover:text-white' 
-                                            : 'hover:bg-gray-200 text-gray-500 hover:text-gray-700'
+                                            ? 'bg-blue-900/50 text-blue-300 hover:bg-blue-800/50' 
+                                            : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
                                         }`}
                                       >
-                                        ✏️
+                                        Edit
                                       </button>
                                       <button
                                         onClick={() => deleteClass(cls.id)}
-                                        className="p-1 rounded hover:bg-red-100 text-red-500 hover:text-red-700 transition-colors"
+                                        className="px-3 py-1 rounded text-sm font-medium bg-red-100 text-red-700 hover:bg-red-200 transition-colors"
                                       >
-                                        🗑️
+                                        Delete
                                       </button>
                                     </div>
                                   </div>
-                                )}
-                              </div>
-                              
-                              {editingClass !== cls.id && (
-                                <div className="flex items-center gap-2 flex-wrap">
-                                  <label className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Estimated time:</label>
-                                  <div className="flex items-center gap-1">
-                                    <input
-                                      type="number"
-                                      min="0"
-                                      max="52"
-                                      value={cls.estimatedWeeks}
-                                      onChange={(e) => updateEstimatedWeeks(cls.id, e.target.value)}
-                                      className={`w-16 px-2 py-1 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-blue-500 ${
+                                  
+                                  <div className="flex items-center gap-4 mt-3 flex-wrap">
+                                    <label className={`text-sm ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>Estimated time:</label>
+                                    <div className="flex items-center gap-2">
+                                      <input
+                                        type="number"
+                                        min="0"
+                                        max="52"
+                                        value={cls.estimatedWeeks}
+                                        onChange={(e) => updateEstimatedWeeks(cls.id, e.target.value)}
+                                        className={`w-16 px-2 py-1 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                          cls.estimatedWeeks > 0 
+                                            ? 'border-emerald-400 bg-emerald-50 text-emerald-800 font-medium' 
+                                            : (darkMode 
+                                                ? 'border-slate-600 bg-slate-700 text-slate-100' 
+                                                : 'border-slate-300 bg-white')
+                                        }`}
+                                        disabled={cls.completed}
+                                        placeholder="0"
+                                      />
+                                      <span className={`text-sm ${
                                         cls.estimatedWeeks > 0 
-                                          ? 'border-green-400 bg-green-50 text-green-800 font-medium' 
-                                          : (darkMode 
-                                              ? 'border-gray-600 bg-gray-700 text-white' 
-                                              : 'border-gray-300 bg-white')
-                                      }`}
-                                      disabled={cls.completed}
-                                      placeholder="0"
-                                    />
-                                    <span className={`text-sm ${
-                                      cls.estimatedWeeks > 0 
-                                        ? 'text-green-700 font-medium' 
-                                        : (darkMode ? 'text-gray-400' : 'text-gray-600')
-                                    }`}>
-                                      weeks
-                                    </span>
-                                  </div>
-                                  <div className="flex items-center gap-1">
-                                    <input
-                                      type="number"
-                                      min="0"
-                                      max="6"
-                                      value={cls.estimatedDays}
-                                      onChange={(e) => updateEstimatedDays(cls.id, e.target.value)}
-                                      className={`w-16 px-2 py-1 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-blue-500 ${
+                                          ? 'text-emerald-700 font-medium' 
+                                          : (darkMode ? 'text-slate-500' : 'text-slate-600')
+                                      }`}>
+                                        weeks
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <input
+                                        type="number"
+                                        min="0"
+                                        max="6"
+                                        value={cls.estimatedDays}
+                                        onChange={(e) => updateEstimatedDays(cls.id, e.target.value)}
+                                        className={`w-16 px-2 py-1 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                          cls.estimatedDays > 0 
+                                            ? 'border-emerald-400 bg-emerald-50 text-emerald-800 font-medium' 
+                                            : (darkMode 
+                                                ? 'border-slate-600 bg-slate-700 text-slate-100' 
+                                                : 'border-slate-300 bg-white')
+                                        }`}
+                                        disabled={cls.completed}
+                                        placeholder="0"
+                                      />
+                                      <span className={`text-sm ${
                                         cls.estimatedDays > 0 
-                                          ? 'border-green-400 bg-green-50 text-green-800 font-medium' 
-                                          : (darkMode 
-                                              ? 'border-gray-600 bg-gray-700 text-white' 
-                                              : 'border-gray-300 bg-white')
-                                      }`}
-                                      disabled={cls.completed}
-                                      placeholder="0"
-                                    />
-                                    <span className={`text-sm ${
-                                      cls.estimatedDays > 0 
-                                        ? 'text-green-700 font-medium' 
-                                        : (darkMode ? 'text-gray-400' : 'text-gray-600')
-                                    }`}>
-                                      days
-                                    </span>
+                                          ? 'text-emerald-700 font-medium' 
+                                          : (darkMode ? 'text-slate-500' : 'text-slate-600')
+                                      }`}>
+                                        days
+                                      </span>
+                                    </div>
                                   </div>
-                                  {(cls.estimatedWeeks > 0 || cls.estimatedDays > 0) && !cls.completed && (
-                                    <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full flex items-center gap-1">
-                                      ✅ Set
-                                    </span>
-                                  )}
                                 </div>
                               )}
                             </div>
@@ -507,29 +782,30 @@
                     </div>
                   </div>
 
-                  <div className={`rounded-lg shadow-lg p-6 transition-colors ${
-                    darkMode ? 'bg-gray-800' : 'bg-white'
+                  {/* Timeline View */}
+                  <div className={`rounded-xl border p-6 ${
+                    darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
                   }`}>
-                    <h2 className={`text-xl font-bold mb-4 flex items-center gap-2 ${
-                      darkMode ? 'text-white' : 'text-gray-800'
+                    <h2 className={`text-xl font-semibold mb-6 ${
+                      darkMode ? 'text-slate-100' : 'text-slate-900'
                     }`}>
-                      <span>📅</span>
                       Study Timeline
                     </h2>
                     
                     {timeline.length === 0 ? (
-                      <div className={`text-center py-8 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                        <div className="text-4xl mb-3">📅</div>
-                        <p>Add estimated weeks to see your timeline</p>
+                      <div className={`text-center py-12 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                        <p>Add time estimates to see your timeline</p>
                       </div>
                     ) : (
-                      <div className="space-y-3">
-                        {timeline.map((item, index) => (
-                          <div key={item.id} className="border-l-4 border-blue-400 pl-4 py-2">
-                            <h4 className={`font-medium mb-1 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+                      <div className="space-y-4 max-h-96 overflow-y-auto">
+                        {timeline.map((item) => (
+                          <div key={item.id} className={`border-l-4 border-blue-400 pl-4 py-3 ${
+                            darkMode ? 'bg-slate-800/50' : 'bg-slate-50'
+                          } rounded-r-lg`}>
+                            <h4 className={`font-medium mb-2 ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>
                               {item.name}
                             </h4>
-                            <div className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                            <div className={`text-sm space-y-1 ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
                               <p>
                                 <span className="font-medium">Start:</span> {formatDate(item.startDate)}
                               </p>
@@ -549,17 +825,17 @@
                         {timeline.length > 0 && (
                           <div className={`mt-6 p-4 border rounded-lg ${
                             darkMode 
-                              ? 'bg-green-900 border-green-700' 
-                              : 'bg-green-50 border-green-200'
+                              ? 'bg-emerald-900/20 border-emerald-800' 
+                              : 'bg-emerald-50 border-emerald-200'
                           }`}>
                             <h3 className={`font-medium mb-2 ${
-                              darkMode ? 'text-green-200' : 'text-green-800'
+                              darkMode ? 'text-emerald-300' : 'text-emerald-800'
                             }`}>Projected Completion</h3>
-                            <p className={darkMode ? 'text-green-300' : 'text-green-700'}>
-                              All remaining classes: {formatDate(timeline[timeline.length - 1]?.endDate)}
+                            <p className={darkMode ? 'text-emerald-400' : 'text-emerald-700'}>
+                              All remaining courses: {formatDate(timeline[timeline.length - 1]?.endDate)}
                             </p>
                             <p className={`text-sm mt-1 ${
-                              darkMode ? 'text-green-400' : 'text-green-600'
+                              darkMode ? 'text-emerald-500' : 'text-emerald-600'
                             }`}>
                               Total study time: {totalWeeks > 0 && `${totalWeeks} week${totalWeeks !== 1 ? 's' : ''}`}{totalWeeks > 0 && remainingDays > 0 && ', '}{remainingDays > 0 && `${remainingDays} day${remainingDays !== 1 ? 's' : ''}`} ({Math.round(totalDays / 30)} months)
                             </p>
@@ -569,21 +845,12 @@
                     )}
                   </div>
                 </div>
-
-                <div className={`mt-6 p-4 rounded-lg text-center ${
-                  darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white text-gray-600'
-                }`}>
-                  <p className="text-sm">
-                    💾 <strong>Want to save your progress?</strong> When you deploy this to GitHub Pages, 
-                    add localStorage code to automatically save your data between sessions!
-                  </p>
-                </div>
               </div>
             </div>
           );
         }
 
-        ReactDOM.render(<StudyPlanner />, document.getElementById('root'));
+        ReactDOM.render(React.createElement(StudyPlanner), document.getElementById('root'));
     </script>
 </body>
 </html>
